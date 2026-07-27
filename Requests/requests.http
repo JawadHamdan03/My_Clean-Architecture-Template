@@ -1,0 +1,20 @@
+@baseURL=https://localhost:7010/api
+
+@AccessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzMDRmZWMwNi05NjNjLTQ4NWMtOTEyMC0zNWIxYTg3MDgyNzgiLCJyb2xlIjoiQ3VzdG9tZXIiLCJuYmYiOjE3ODUxMzU2MTQsImV4cCI6MTc4NTEzNjIxNCwiaWF0IjoxNzg1MTM1NjE0LCJpc3MiOiJsb2NhbGhvc3QiLCJhdWQiOiJsb2NhbGhvc3QifQ.DR2lQ_tGmdbFbWrK4vE82jrrqy1_Z0g_QOzyzWiLmQE
+@RefreshToken=azpYnIF9srZJDRP+gOpAidv9DQqTksN8KFt0qAUFs8I=
+
+@name="jawad"
+
+###
+POST {{baseURL}}/accounts/login
+Content-Type: application/json
+
+{
+    "Name":{{name}},
+    "Password":"123456"
+}
+
+
+###
+GET {{baseURL}}/products
+Authorization: Bearer {{AccessToken}}

@@ -1,13 +1,16 @@
 using cla.Application.Features.Products.CreateProduct;
 using cla.Application.Features.Products.GetProducts;
 using cla.Application.Features.Products.Requests;
+using cla.Domain.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace cla.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize(Roles ="Customer")]
 public class ProductsController(IMediator mediator) : ControllerBase
 {
     [HttpPost]
