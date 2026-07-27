@@ -1,5 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using cla.Application.Common;
 using cla.Application.Common.Abstractions;
@@ -50,17 +51,40 @@ public class jwtTokenServiceProvider(IAppDbContext dbContext,IConfiguration conf
         var tokenHandler = new JwtSecurityTokenHandler();
         var securityToken = tokenHandler.CreateToken(descriptor);
 
+        var refToken= await GenerateRefreshToken(request);
         return new TokenResponse
         {
             AccessToken = tokenHandler.WriteToken(securityToken),
-            RefreshToken="4asdas-asdasd6-asdasd13",
+            RefreshToken=refToken,
             ExpiresAt=expiry
         };
 
     }
 
-    public Task<string> GenerateRefreshToken()
+    public async Task<string> GenerateRefreshToken(User user)
     {
-        throw new NotImplementedException();
+        var dbUser = await dbContext.Users.AsNoTracking().FirstOrDefaultAsync(u=>u.Name.Equals(user.Name));
+
+        if (dbUser is null)
+        {
+            throw new Exception("User Was Not Found");
+        }
+
+        var userRefreshToken = await dbContext.RefreshTokens.Where(r=>r.UserId.Equals(dbUser.Id)).ExecuteDeleteAsync();
+
+        var rawToken = Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
+
+        RefreshToken refToken = new RefreshToken
+        {
+            Token=rawToken,
+            UserId=dbUser.Id,
+            ExpiresAt=DateTime.UtcNow.AddDays(7)
+        };
+
+        await dbContext.RefreshTokens.AddAsync(refToken);
+        await dbContext.SaveChangesAsync(new CancellationToken());
+
+        return rawToken;
+
     }
 }

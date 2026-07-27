@@ -7,5 +7,5 @@ namespace cla.Application.Common.Abstractions;
 public interface IJwtTokenServiceProvider
 {
     Task<TokenResponse> GenerateJwtToken(User user);
-    Task<string> GenerateRefreshToken();
+    Task<string> GenerateRefreshToken(User user);
 }
