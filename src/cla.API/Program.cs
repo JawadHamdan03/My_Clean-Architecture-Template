@@ -5,6 +5,7 @@ using cla.Application.Common.Abstractions;
 using cla.Application.Common.Behaviors;
 using cla.Infrastructure.Common.Implementation;
 using cla.Infrastructure.Data;
+using cla.Infrastructure.Hubs;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -20,11 +21,23 @@ builder.Services.AddControllers().AddJsonOptions(options =>
     options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        policy
+            .WithOrigins("http://127.0.0.1:5500")
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
+    });
+});
+
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseSqlite("Data Source = app.db");
 });
-
+builder.Services.AddSignalR();
 builder.Services.AddMediatR(options =>
 {
     options.RegisterServicesFromAssembly(typeof(IAssemblyMarker).Assembly);
@@ -58,6 +71,8 @@ builder.Services.AddAuthentication(options =>
 });
 
 builder.Services.AddAuthorization();
+
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -78,9 +93,13 @@ if (app.Environment.IsDevelopment())
     app.MapScalarApiReference();
 }
 
+app.UseCors("AllowFrontend");
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapHub<ChatHub>("/chat");
+
 app.MapControllers();
 
 app.Run();
