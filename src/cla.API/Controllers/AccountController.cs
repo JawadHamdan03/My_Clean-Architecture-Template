@@ -1,5 +1,6 @@
 using cla.API.Requests;
 using cla.Application.Features.Accounts.LoginCommand;
+using cla.Application.Features.Accounts.RefreshTokenCommand;
 using cla.Application.Features.Accounts.RegisterCommand;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -22,6 +23,14 @@ public class AccountController(IMediator mediator) : ControllerBase
     public async Task<IActionResult> registerUser(RegisterRequest registerRequest)
     {
         var res =await mediator.Send(new RegisterCommand(registerRequest.Name,registerRequest.Password));
+        return Ok(res);
+    }
+
+
+    [HttpPost("refresh-token")]
+    public async Task<IActionResult> refreshToken([FromBody]string refreshToken)
+    {
+        var res = await mediator.Send(new RefreshTokenCommand(refreshToken));
         return Ok(res);
     }
 
