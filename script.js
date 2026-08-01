@@ -18,8 +18,8 @@ connection.on("newmessage",(n,m)=>{
 })
 
 
-async function send(event)
+ function send(event)
 {
-    event.preventDefault()
+    
     connection.invoke("sendMessage",my_name,document.getElementById("text").value)
 }

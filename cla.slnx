@@ -1,4 +1,8 @@
 <Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="index.html" />
+    <File Path="script.js" />
+  </Folder>
   <Folder Name="/src/">
     <Project Path="src/cla.API/cla.API.csproj" />
     <Project Path="src/cla.Application/cla.Application.csproj" />
