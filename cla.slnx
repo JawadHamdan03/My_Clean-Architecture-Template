@@ -1,6 +1,7 @@
 <Solution>
   <Folder Name="/Solution Items/">
     <File Path="index.html" />
+    <File Path="README.md" />
     <File Path="script.js" />
   </Folder>
   <Folder Name="/src/">
